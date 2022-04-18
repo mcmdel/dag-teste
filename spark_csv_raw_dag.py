@@ -1,4 +1,5 @@
 # internal library
+from datetime import datetime
 import time
 import random
 
@@ -19,6 +20,7 @@ default_args = {
 @dag(
      dag_id= 'spark_csv_raw_dag',
      description= 'Execução do Spark JOB para carga de dados na Raw',
+     start_date=datetime(2022, 4, 18),
      catchup=False,
      default_args= default_args,
      tags=['simulation'],
