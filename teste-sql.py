@@ -56,6 +56,16 @@ create_table_mssql_task = MsSqlOperator(
     dag=dag,
 )
 
+insert_mssql_task = MsSqlOperator(
+    task_id='insert_mssql_task',
+    mssql_conn_id='sql-warehousegcp',
+    database='SOLO_OPERACIONAL',
+    sql=r"""
+    INSERT INTO Country
+    VALUES ('teste', 'teste')
+    """,
+    dag=dag,
+)
 # [END howto_operator_mssql]
 
 # [START mssql_hook_howto_guide_insert_mssql_hook]
@@ -132,7 +142,7 @@ create_table_mssql_task = MsSqlOperator(
 # [END mssql_operator_howto_guide_params_passing_get_query]
 (
     create_table_mssql_task
-   # >> insert_mssql_hook()
+    >> insert_mssql_task()
 
 )
 # [END mssql_operator_howto_guide]
