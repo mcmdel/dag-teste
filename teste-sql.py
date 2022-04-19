@@ -142,7 +142,7 @@ insert_mssql_task = MsSqlOperator(
 # [END mssql_operator_howto_guide_params_passing_get_query]
 (
     create_table_mssql_task
-    >> insert_mssql_task()
+    >> insert_mssql_task
 
 )
 # [END mssql_operator_howto_guide]
