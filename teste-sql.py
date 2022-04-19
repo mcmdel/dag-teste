@@ -44,6 +44,7 @@ create_table_mssql_task = MsSqlOperator(
     mssql_conn_id='sql-warehousegcp',
     database='SOLO_OPERACIONAL',
     sql=r"""
+    DROP TABLE IF EXISTS Country
     CREATE TABLE Country (
         country_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
         name TEXT,
@@ -60,7 +61,7 @@ create_table_mssql_task = MsSqlOperator(
 
 @dag.task(task_id="insert_mssql_task")
 def insert_mssql_hook():
-    mssql_hook = MsSqlHook(mssql_conn_id='sql-warehousegcp', database='SOLO_OPERACIONAL')
+    mssql_hook = MsSqlHook(mssql_conn_id='sql-warehousegcp', database='SOLO_OPERACIONAL', schema='dbo')
 
     rows = [
         ('India', 'Asia'),
