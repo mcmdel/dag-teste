@@ -37,7 +37,7 @@ def spark_job_csv():
         dag_run = kwargs.get('dag_run')
         message = dag_run.conf['message']
 
-        print(message)
+        print(f'Parameter = {message}')
 
         # faixa = random.choice([2,5,7,20,30,60,75,80,100,240])
         # tempo = random.randint(1, faixa)
