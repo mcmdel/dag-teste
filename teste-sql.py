@@ -49,7 +49,9 @@ create_table_mssql_task = MsSqlOperator(
         country_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
         name TEXT,
         continent TEXT
-    );
+    )
+    INSERT INTO Country
+    VALUES ('teste', 'teste')
     """,
     dag=dag,
 )
@@ -59,20 +61,20 @@ create_table_mssql_task = MsSqlOperator(
 # [START mssql_hook_howto_guide_insert_mssql_hook]
 
 
-@dag.task(task_id="insert_mssql_task")
-def insert_mssql_hook():
-    mssql_hook = MsSqlHook(mssql_conn_id='sql-warehousegcp', database='SOLO_OPERACIONAL', schema='dbo')
+# @dag.task(task_id="insert_mssql_task")
+# def insert_mssql_hook():
+#     mssql_hook = MsSqlHook(mssql_conn_id='sql-warehousegcp', database='SOLO_OPERACIONAL', schema='dbo')
 
-    rows = [
-        ('India', 'Asia'),
-        ('Germany', 'Europe'),
-        ('Argentina', 'South America'),
-        ('Ghana', 'Africa'),
-        ('Japan', 'Asia'),
-        ('Namibia', 'Africa'),
-    ]
-    target_fields = ['name', 'continent']
-    mssql_hook.insert_rows(table='Country', rows=rows, target_fields=target_fields)
+#     rows = [
+#         ('India', 'Asia'),
+#         ('Germany', 'Europe'),
+#         ('Argentina', 'South America'),
+#         ('Ghana', 'Africa'),
+#         ('Japan', 'Asia'),
+#         ('Namibia', 'Africa'),
+#     ]
+#     target_fields = ['name', 'continent']
+#     mssql_hook.insert_rows(table='Country', rows=rows, target_fields=target_fields)
 
 
 # [END mssql_hook_howto_guide_insert_mssql_hook]
@@ -130,7 +132,7 @@ def insert_mssql_hook():
 # [END mssql_operator_howto_guide_params_passing_get_query]
 (
     create_table_mssql_task
-    >> insert_mssql_hook()
+   # >> insert_mssql_hook()
 
 )
 # [END mssql_operator_howto_guide]
