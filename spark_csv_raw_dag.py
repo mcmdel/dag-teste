@@ -24,7 +24,6 @@ default_args = {
      catchup=False,
      default_args= default_args,
      tags=['simulation'],
-     trigger_arguments = {"message": "string"}
 )
 def spark_job_csv():
     """
