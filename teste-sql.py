@@ -30,7 +30,7 @@ from airflow.providers.microsoft.mssql.operators.mssql import MsSqlOperator
 dag = DAG(
     'example_mssql',
     schedule_interval='@daily',
-    start_date=datetime(2022, 19, 4),
+    start_date=datetime(2022, 4, 19),
     tags=['example'],
     catchup=False,
 )
