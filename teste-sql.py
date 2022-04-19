@@ -42,7 +42,7 @@ dag = DAG(
 create_table_mssql_task = MsSqlOperator(
     task_id='create_country_table',
     mssql_conn_id='sql-warehousegcp',
-    databse='SOLO_OPERACIONAL',
+    database='SOLO_OPERACIONAL',
     sql=r"""
     CREATE TABLE Country (
         country_id INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
@@ -60,7 +60,7 @@ create_table_mssql_task = MsSqlOperator(
 
 @dag.task(task_id="insert_mssql_task")
 def insert_mssql_hook():
-    mssql_hook = MsSqlHook(mssql_conn_id='sql-warehousegcp', databse='SOLO_OPERACIONAL')
+    mssql_hook = MsSqlHook(mssql_conn_id='sql-warehousegcp', database='SOLO_OPERACIONAL')
 
     rows = [
         ('India', 'Asia'),
