@@ -24,23 +24,26 @@ default_args = {
      catchup=False,
      default_args= default_args,
      tags=['simulation'],
+     trigger_arguments = {"message": "string"}
 )
 def spark_job_csv():
     """
     ### Execução de spark job
     """
     @task()
-    def spark_csv_raw():
+    def spark_csv_raw(ds=None, **kwargs):
         """
-        #### Extract task
-        A simple Extract task to get data ready for the rest of the data
-        pipeline. In this case, getting data is simulated by reading from a
-        hardcoded JSON string.
+        #### Submit Job Spark CSV -> Raw
         """
-        faixa = random.choice([2,5,7,20,30,60,75,80,100,240])
-        tempo = random.randint(1, faixa)
+        dag_run = kwargs.get('dag_run')
+        message = dag_run.conf['message']
 
-        time.sleep(tempo)
+        print(message)
+
+        # faixa = random.choice([2,5,7,20,30,60,75,80,100,240])
+        # tempo = random.randint(1, faixa)
+
+        # time.sleep(tempo)
 
         return True
     service_spark = spark_csv_raw()
