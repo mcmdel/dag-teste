@@ -28,7 +28,7 @@ def carga_trino():
     """
     ### Execução de spark job
     """
-    @task(trino_conn_id='trino')
+    @task()
     def trino_script():
         """
         #### Executa script no trino
