@@ -14,7 +14,7 @@ default_args = {
     "owner": "mtrix",
     "depends_on_past": False,
     "email": "mmedeiros@mtrix.com.br", # Make sure you create the "email_monitoring" variable in the Airflow interface
-    "email_on_failure": True,
+    "email_on_failure": False,
     "email_on_retry": False
 }
 
@@ -43,7 +43,9 @@ def carga_trino():
             schema='raw',
         )
         cur = conn.cursor()
-        cur.execute(""" CREATE TABLE IF NOT EXISTS iceberg.raw."teste" (id int,name string); """)
+        cur.execute(""" CREATE TABLE IF NOT EXISTS iceberg.raw."teste" (id integer,name varchar(50)) """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         cur.fetchall()
         # ts = TrinoHook()
         # sql = """ CREATE TABLE IF NOT EXISTS iceberg.raw."teste" (id int,name string); """
