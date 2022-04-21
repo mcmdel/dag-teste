@@ -2,7 +2,9 @@
 from datetime import datetime
 
 from airflow.decorators import dag, task
-from airflow.providers.trino.hooks.trino import TrinoHook
+#from airflow.providers.trino.hooks.trino import TrinoHook
+
+import trino
 
 ############################################################
 # Default DAG arguments
@@ -33,9 +35,19 @@ def carga_trino():
         """
         #### Executa script no trino
         """
-        ts = TrinoHook()
-        sql = """ CREATE TABLE IF NOT EXISTS iceberg.raw."teste" (id int,name string); """
-        ts.run(sql)
+        conn = trino.dbapi.connect(
+            host='localhost',
+            port=8080,
+            user='the-user',
+            catalog='iceberg',
+            schema='raw',
+        )
+        cur = conn.cursor()
+        cur.execute(""" CREATE TABLE IF NOT EXISTS iceberg.raw."teste" (id int,name string); """)
+        cur.fetchall()
+        # ts = TrinoHook()
+        # sql = """ CREATE TABLE IF NOT EXISTS iceberg.raw."teste" (id int,name string); """
+        # ts.run(sql)
 
     task_trino = trino_script()
 
