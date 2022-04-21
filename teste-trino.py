@@ -19,7 +19,6 @@ default_args = {
 @dag(
      dag_id= 'carga_trino_dag',
      description= 'Execução script no trino',
-     trino_conn_id='trino',
      start_date=datetime(2022, 4, 18),
      catchup=False,
      default_args= default_args,
@@ -29,7 +28,7 @@ def carga_trino():
     """
     ### Execução de spark job
     """
-    @task()
+    @task(trino_conn_id='trino')
     def trino_script():
         """
         #### Executa script no trino
