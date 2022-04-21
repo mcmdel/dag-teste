@@ -36,9 +36,9 @@ def carga_trino():
         #### Executa script no trino
         """
         conn = trino.dbapi.connect(
-            host='localhost',
+            host='trino.warehouse',
             port=8080,
-            user='the-user',
+            user='admin',
             catalog='iceberg',
             schema='raw',
         )
