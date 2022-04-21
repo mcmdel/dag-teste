@@ -37,6 +37,17 @@ def spark_job_csv():
         dag_run = kwargs.get('dag_run')
         message = dag_run.conf['message']
 
+        # Lancar spark Job via spark-submit e verificar o retorno
+        # Loop para verificar via Rest API Spark quando o Job concluir (success / Failt)
+        # URL = http://<server-url>:18080/api/v1/applications/[app-id]/jobs?status=[active|complete|pending|failed]
+        #
+
+        # Loop para verificar via Rest API Spark quando o Job concluir (success / Failt)
+        # URL = http://<server-url>:18080/api/v1/applications/[app-id]/jobs?status=[active|complete|pending|failed]
+        #
+
+        # Retornar resultado do processamento
+
         faixa = random.choice([1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,5,5,5,6,7,20,30,60,75,80,100,240])
         tempo = random.randint(0, faixa)
 
