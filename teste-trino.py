@@ -22,14 +22,13 @@ default_args = {
      start_date=datetime(2022, 4, 18),
      catchup=False,
      default_args= default_args,
-     try_number=5,
      tags=['carga'],
 )
 def carga_trino():
     """
     ### Execução de spark job
     """
-    @task()
+    @task(try_number=5)
     def trino_script():
         """
         #### Executa script no trino
