@@ -43,7 +43,7 @@ def carga_trino():
             schema='trusted',
         )
         cur = conn.cursor()
-        cur.execute(""" truncate table iceberg.trusted."produto_fornecedor" """)
+        cur.execute(""" delete table iceberg.trusted."produto_fornecedor" """)
         cur.fetchall()
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
@@ -61,7 +61,7 @@ def carga_trino():
             schema='raw',
         )
         cur = conn.cursor()
-        cur.execute(""" truncate table produto_parceria """)
+        cur.execute(""" delete table produto_parceria """)
         cur.fetchall()
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
