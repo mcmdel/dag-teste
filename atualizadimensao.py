@@ -30,7 +30,7 @@ def carga_trino():
     """
     ### Execução de spark job
     """
-    @task(task_id = 'Atualiza_PRODUTO_FORNECEDOR')
+    @task(task_id = 'ATUALIZA_PRD_FORNECEDOR')
     def atualiza_prd_Fornecedor():
         """
         #### Executa script no trino
@@ -50,7 +50,7 @@ def carga_trino():
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
 
-    @task(task_id = 'produto_parceria')
+    @task(task_id = 'ATUALIZA_PRD_PARCERIA')
     def atualiza_prd_AD():
         """
         #### Executa script no trino
@@ -64,6 +64,8 @@ def carga_trino():
         )
         cur = conn.cursor()
         cur.execute(""" delete from iceberg.trusted.produto_parceria """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.trusted."produto_parceria" select * from solo_operacional.dbo.produto_parceria """)
         cur.fetchall()
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
