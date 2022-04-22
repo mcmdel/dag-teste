@@ -45,6 +45,8 @@ def carga_trino():
         cur = conn.cursor()
         cur.execute(""" delete from iceberg.trusted."produto_fornecedor" """)
         cur.fetchall()
+        cur.execute(""" insert into iceberg.trusted."produto_fornecedor" select * from solo_operacional.dbo.produto_fornecedor """)
+        cur.fetchall()
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
 
@@ -58,10 +60,10 @@ def carga_trino():
             port=8080,
             user='admin',
             catalog='iceberg',
-            schema='raw',
+            schema='trusted',
         )
         cur = conn.cursor()
-        cur.execute(""" delete from produto_parceria """)
+        cur.execute(""" delete from iceberg.trusted.produto_parceria """)
         cur.fetchall()
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
