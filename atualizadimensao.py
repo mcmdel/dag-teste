@@ -31,7 +31,7 @@ def carga_trino():
     ### Execução de spark job
     """
     @task(task_id = 'Atualiza_PRODUTO_FORNECEDOR')
-    def trino_script():
+    def atualiza_prd_Fornecedor():
         """
         #### Executa script no trino
         """
@@ -49,7 +49,7 @@ def carga_trino():
         # cur.fetchall()
 
     @task(task_id = 'produto_parceria')
-    def trino_AD():
+    def atualiza_prd_AD():
         """
         #### Executa script no trino
         """
@@ -65,6 +65,8 @@ def carga_trino():
         cur.fetchall()
         # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
         # cur.fetchall()
+
+    atualiza_prd_Fornecedor() >> atualiza_prd_AD()
 
 carga_trino_dag = carga_trino()
 
