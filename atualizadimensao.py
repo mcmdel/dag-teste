@@ -6,6 +6,14 @@ from airflow.decorators import dag, task
 
 import trino
 
+
+conn = trino.dbapi.connect(
+    host='trino.warehouse',
+    port=8080,
+    user='admin',
+    catalog='iceberg',
+    schema='trusted',
+)
 ############################################################
 # Default DAG arguments
 ############################################################
@@ -35,13 +43,6 @@ def carga_trino():
         """
         #### Executa script no trino
         """
-        conn = trino.dbapi.connect(
-            host='trino.warehouse',
-            port=8080,
-            user='admin',
-            catalog='iceberg',
-            schema='trusted',
-        )
         cur = conn.cursor()
         cur.execute(""" delete from iceberg.trusted."produto_fornecedor" """)
         cur.fetchall()
@@ -55,13 +56,6 @@ def carga_trino():
         """
         #### Executa script no trino
         """
-        conn = trino.dbapi.connect(
-            host='trino.warehouse',
-            port=8080,
-            user='admin',
-            catalog='iceberg',
-            schema='trusted',
-        )
         cur = conn.cursor()
         cur.execute(""" delete from iceberg.trusted.produto_parceria """)
         cur.fetchall()
