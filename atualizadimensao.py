@@ -38,7 +38,7 @@ def carga_trino():
     """
     ### Execução de spark job
     """
-    @task(task_id = 'ATUALIZA_PRD_FORNECEDOR')
+    @task(task_id = 'atualiza_prd_Fornecedor')
     def atualiza_prd_Fornecedor():
         """
         #### Executa script no trino
@@ -48,10 +48,8 @@ def carga_trino():
         cur.fetchall()
         cur.execute(""" insert into iceberg.trusted."produto_fornecedor" select * from solo_operacional.dbo.produto_fornecedor """)
         cur.fetchall()
-        # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
-        # cur.fetchall()
 
-    @task(task_id = 'ATUALIZA_PRD_PARCERIA')
+    @task(task_id = 'atualiza_prd_AD')
     def atualiza_prd_AD():
         """
         #### Executa script no trino
@@ -61,10 +59,31 @@ def carga_trino():
         cur.fetchall()
         cur.execute(""" insert into iceberg.trusted."produto_parceria" select * from solo_operacional.dbo.produto_parceria """)
         cur.fetchall()
-        # cur.execute(""" insert into iceberg.raw."teste" values (1,'teste') """)
-        # cur.fetchall()
 
-    atualiza_prd_Fornecedor() >> atualiza_prd_AD()
+    @task(task_id = 'atualiza_cnpj_fornecedor')
+    def atualiza_cnpj_fornecedor():
+        """
+        #### Executa script no trino
+        """
+        cur = conn.cursor()
+        cur.execute(""" delete from iceberg.trusted.fornecedor """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.trusted."fornecedor" select * from solo_operacional.dbo.fornecedor """)
+        cur.fetchall()
+
+    @task(task_id = 'atualiza_cnpj_ad')
+    def atualiza_cnpj_ad():
+        """
+        #### Executa script no trino
+        """
+        cur = conn.cursor()
+        cur.execute(""" delete from iceberg.trusted.distribuidor """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.trusted."distribuidor" select * from solo_operacional.dbo.distribuidor """)
+        cur.fetchall()
+
+
+    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad()]
 
 carga_trino_dag = carga_trino()
 
