@@ -30,6 +30,7 @@ default_args = {
      dag_id= 'carga_dimensao_Mtrix',
      description= 'Execução script no trino',
      start_date=datetime(2022, 4, 18),
+     schedule_interval="@daily"
      catchup=False,
      default_args= default_args,
      tags=['carga', 'Atualizacao', 'Dimensao'],
