@@ -90,7 +90,7 @@ def carga_trino():
     print ("Sucesso")
 
 
-    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad() >> envia_email()]
+    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad()] >> envia_email()
 
 carga_trino_dag = carga_trino()
 
