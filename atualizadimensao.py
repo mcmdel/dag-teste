@@ -82,8 +82,15 @@ def carga_trino():
         cur.execute(""" insert into iceberg.trusted."distribuidor" select * from solo_operacional.dbo.distribuidor """)
         cur.fetchall()
 
+    @task(task_id = 'envia_email')
+    def envia_email():
+        """
+        #### Executa script no trino
+        """
+    print ("Sucesso")
 
-    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad()]
+
+    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad() >> envia_email()]
 
 carga_trino_dag = carga_trino()
 
