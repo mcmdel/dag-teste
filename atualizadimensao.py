@@ -21,7 +21,7 @@ conn = trino.dbapi.connect(
 default_args = {
     "owner": "mtrix",
     "depends_on_past": False,
-    "email": "mmedeiros@mtrix.com.br", # Make sure you create the "email_monitoring" variable in the Airflow interface
+    "email": "mmedeiros@mtrix.com.br;cbarbosa@mtrix.com.br", # Make sure you create the "email_monitoring" variable in the Airflow interface
     "email_on_failure": False,
     "email_on_retry": False
 }
@@ -30,7 +30,7 @@ default_args = {
      dag_id= 'carga_dimensao_Mtrix',
      description= 'Execução script no trino',
      start_date=datetime(2022, 4, 18),
-     schedule_interval="@daily"
+     schedule_interval="@daily",
      catchup=False,
      default_args= default_args,
      tags=['carga', 'Atualizacao', 'Dimensao'],
