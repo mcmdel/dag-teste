@@ -45,6 +45,8 @@ def spark_job_csv():
         dag_run = kwargs.get('dag_run')
         message = dag_run.conf['message']
 
+        print("Pametro", dag_run)
+
         # Lancar spark Job via spark-submit e verificar o retorno
         # Loop para verificar via Rest API Spark quando o Job concluir (success / Failt)
         # URL = http://<server-url>:18080/api/v1/applications/[app-id]/jobs?status=[active|complete|pending|failed]
