@@ -2,20 +2,20 @@
 from datetime import datetime
 import time
 import random
-import trino
+import psycopg2
+import os
 
 from airflow.decorators import dag, task
 
 ############################################################
 # Default DAG arguments
 ############################################################
-conn = trino.dbapi.connect(
-    host='trino.warehouse',
-    port=8080,
-    user='admin',
-    catalog='metadata',
-    schema='public',
-)
+DATABASE = os.getenv('PG_DATABASE', 'mtrix_metadata')
+USER = os.getenv('PG_USER', 'postgres')
+PASSWORD = os.getenv('PASSWORD_PG', 'dbagnx2010@')
+HOST = os.getenv('PG_HOST', 'metadata-postgres.mtrix-postgres')
+PORT = os.getenv('PG_PORT', '5432')
+
 
 default_args = {
     "owner": "mtrix",
@@ -79,13 +79,16 @@ def spark_job_csv():
         """
         #### Executa script no trino
         """
-        cur = conn.cursor()
-        cur.execute("""UPDATE ctr_mensagem_kafka
+        conn = psycopg2.connect(database=DATABASE,user=USER,password=PASSWORD,host=HOST,port=PORT)
+        with conn:
+           cursor = conn.cursor()
+
+           query = ("""UPDATE ctr_mensagem_kafka
                        SET ic_status = '{}',
                            dt_processamento = '{}',
                            ic_processado = '{}'
-                     WHERE cd_geracao_arquivo = '{}'""".format(param["status"],param["process_date"],param["process"],param["instance_name"]))
-        cur.fetchall()
+                     WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["instance_name"]))
+           cursor.execute(query)
 
     t1 = spark_csv_raw()
     update_metadata(t1)
