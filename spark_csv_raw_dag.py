@@ -44,8 +44,11 @@ def spark_job_csv():
         """
         dag_run = kwargs.get('dag_run')
         message = dag_run.conf['message']
+        dg_run  = dag_run['dag_run_id']
 
-        print("Pametro", dag_run)
+        print("Pametro", dg_run)
+
+        #Pametro <DagRun spark_csv_raw_dag @ 2022-05-02 21:45:08.432816+00:00: csv_to_raw-0-020220502T184508432630, externally triggered: True>
 
         # Lancar spark Job via spark-submit e verificar o retorno
         # Loop para verificar via Rest API Spark quando o Job concluir (success / Failt)
