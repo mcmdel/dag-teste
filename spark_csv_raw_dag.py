@@ -16,12 +16,11 @@ PASSWORD = os.getenv('PASSWORD_PG', 'dbagnx2010@')
 HOST = os.getenv('PG_HOST', 'metadata-postgres.mtrix-postgres')
 PORT = os.getenv('PG_PORT', '5432')
 
-
 default_args = {
     "owner": "mtrix",
     "depends_on_past": False,
     "email": "mmedeiros@mtrix.com.br", # Make sure you create the "email_monitoring" variable in the Airflow interface
-    "email_on_failure": True,
+    "email_on_failure": False,
     "email_on_retry": False
 }
 
@@ -74,7 +73,7 @@ def spark_job_csv():
                 }
         return param
 
-    @task(task_id = 'update_metadata',multiple_outputs=True)
+    @task(task_id = 'update_metadata')
     def update_metadata(param: dict):
         """
         #### Executa script no trino
@@ -83,11 +82,11 @@ def spark_job_csv():
         with conn:
            cursor = conn.cursor()
 
-           query = ("""UPDATE ctr_mensagem_kafka
+           query = """UPDATE ctr_mensagem_kafka
                        SET ic_status = '{}',
                            dt_processamento = '{}',
                            ic_processado = '{}'
-                     WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["instance_name"]))
+                     WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["instance_name"])
            cursor.execute(query)
 
     t1 = spark_csv_raw()
