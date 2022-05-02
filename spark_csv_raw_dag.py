@@ -64,7 +64,7 @@ def spark_job_csv():
 
         param = {
                   "status": "success",
-                  "process_date": str(datetime.datetime.now()),
+                  "process_date": str(datetime.now()),
                   "process": "S",
                   "instance_name": dag_run.dag_run_id
                 }
