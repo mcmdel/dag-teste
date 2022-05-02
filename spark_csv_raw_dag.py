@@ -2,12 +2,20 @@
 from datetime import datetime
 import time
 import random
+import trino
 
 from airflow.decorators import dag, task
 
 ############################################################
 # Default DAG arguments
 ############################################################
+conn = trino.dbapi.connect(
+    host='trino.warehouse',
+    port=8080,
+    user='admin',
+    catalog='metadata',
+    schema='public',
+)
 
 default_args = {
     "owner": "mtrix",
@@ -29,7 +37,7 @@ def spark_job_csv():
     """
     ### Execução de spark job
     """
-    @task()
+    @task(task_id = 'spark_csv_raw')
     def spark_csv_raw(ds=None, **kwargs):
         """
         #### Submit Job Spark CSV -> Raw
@@ -54,7 +62,34 @@ def spark_job_csv():
         time.sleep(tempo)
         print(f'Parameter = {message}')
 
+        param = kwargs['param']
+        param.xcom_push('status', 'success')
+        param.xcom_push('process_date', str(datetime.datetime.now()))
+        param.xcom_push('process', 'S')
+        param.xcom_push('instance_name', dag_run.dag_run_id)
+
         return True
-    service_spark = spark_csv_raw()
+
+    @task(task_id = 'update_metadata')
+    def update_metadata(ds=None, **kwargs):
+        """
+        #### Executa script no trino
+        """
+        param = kwargs['param']
+        status = param.xcom_pull(task_ids='spark_csv_raw', key='status')
+        process_date = param.xcom_pull(task_ids='spark_csv_raw', key='process_date')
+        process = param.xcom_pull(task_ids='spark_csv_raw', key='process')
+        instance_name = param.xcom_pull(task_ids='spark_csv_raw', key='instance_name')
+
+        cur = conn.cursor()
+        cur.execute("""UPDATE ctr_mensagem_kafka
+                       SET ic_status = '{}',
+                           dt_processamento = '{}',
+                           ic_processado = '{}'
+                     WHERE cd_geracao_arquivo = '{}'""".format(status,process_date,process,instance_name))
+        cur.fetchall()
+
+    spark_csv_raw() >> update_metadata
+
 
 spark_csv_raw_dag = spark_job_csv()
