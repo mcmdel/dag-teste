@@ -62,16 +62,16 @@ def spark_job_csv():
         time.sleep(tempo)
         print(f'Parameter = {message}')
 
-        param = kwargs['param']
-        param.xcom_push('status', 'success')
-        param.xcom_push('process_date', str(datetime.datetime.now()))
-        param.xcom_push('process', 'S')
-        param.xcom_push('instance_name', dag_run.dag_run_id)
+        param = {
+                  "status": "success",
+                  "process_date": str(datetime.datetime.now()),
+                  "process": "S",
+                  "instance_name": dag_run.dag_run_id
+                }
+        return param
 
-        return True
-
-    @task(task_id = 'update_metadata')
-    def update_metadata(ds=None, **kwargs):
+    @task(task_id = 'update_metadata',multiple_outputs=True)
+    def update_metadata(param: dict):
         """
         #### Executa script no trino
         """
@@ -86,10 +86,10 @@ def spark_job_csv():
                        SET ic_status = '{}',
                            dt_processamento = '{}',
                            ic_processado = '{}'
-                     WHERE cd_geracao_arquivo = '{}'""".format(status,process_date,process,instance_name))
+                     WHERE cd_geracao_arquivo = '{}'""".format(param["status"],param["process_date"],param["process"],param["instance_name"]))
         cur.fetchall()
 
-    spark_csv_raw() >> update_metadata
-
+    t1 = spark_csv_raw()
+    update_metadata(t1)
 
 spark_csv_raw_dag = spark_job_csv()
