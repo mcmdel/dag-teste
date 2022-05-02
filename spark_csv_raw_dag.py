@@ -75,12 +75,6 @@ def spark_job_csv():
         """
         #### Executa script no trino
         """
-        param = kwargs['param']
-        status = param.xcom_pull(task_ids='spark_csv_raw', key='status')
-        process_date = param.xcom_pull(task_ids='spark_csv_raw', key='process_date')
-        process = param.xcom_pull(task_ids='spark_csv_raw', key='process')
-        instance_name = param.xcom_pull(task_ids='spark_csv_raw', key='instance_name')
-
         cur = conn.cursor()
         cur.execute("""UPDATE ctr_mensagem_kafka
                        SET ic_status = '{}',
