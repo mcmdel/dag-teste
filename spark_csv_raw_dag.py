@@ -6,6 +6,7 @@ import psycopg2
 import os
 
 from airflow.decorators import dag, task
+from airflow.providers.apache.livy.operators.livy import LivyOperator
 
 ############################################################
 # Default DAG arguments
@@ -43,34 +44,34 @@ def spark_job_csv():
         """
         dag_run = kwargs.get('dag_run')
         message = dag_run.conf['message']
+        error_message = ""
 
-        print("Pametro", dag_run.run_id)
+        print("Parametro", dag_run.run_id)
 
-        #Pametro <DagRun spark_csv_raw_dag @ 2022-05-02 21:45:08.432816+00:00: csv_to_raw-0-020220502T184508432630, externally triggered: True>
+        try:
+            job = LivyOperator(file='app/processar.py', args=["--args1", message], polling_interval=1)
 
-        # Lancar spark Job via spark-submit e verificar o retorno
-        # Loop para verificar via Rest API Spark quando o Job concluir (success / Failt)
-        # URL = http://<server-url>:18080/api/v1/applications/[app-id]/jobs?status=[active|complete|pending|failed]
-        #
+            job.execute()
+            status = 'success'
+        except Exception as e:
+            error_message = e
+            status = 'failed'
 
-        # Loop para verificar via Rest API Spark quando o Job concluir (success / Failt)
-        # URL = http://<server-url>:18080/api/v1/applications/[app-id]/jobs?status=[active|complete|pending|failed]
-        #
+        ts = datetime.now()
 
-        # Retornar resultado do processamento
-
-        faixa = random.choice([1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,5,5,5,6,7,20,30,60,75,80,100,240])
-        tempo = random.randint(0, faixa)
-
-        time.sleep(tempo)
-        print(f'Parameter = {message}')
+        if status == 'success':
+            process = 'S'
+        else:
+            process = 'E'
 
         param = {
-                  "status": "success",
-                  "process_date": str(datetime.now()),
-                  "process": "S",
-                  "instance_name": dag_run.run_id
+                  "status": status,
+                  "process_date": str(ts),
+                  "process": process,
+                  "instance_name": dag_run.run_id,
+                  "error_message": error_message
                 }
+
         return param
 
     @task(task_id = 'update_metadata')
@@ -83,10 +84,11 @@ def spark_job_csv():
            cursor = conn.cursor()
 
            query = """UPDATE ctr_mensagem_kafka
-                       SET ic_status = '{}',
-                           dt_processamento = '{}',
-                           ic_processado = '{}'
-                     WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["instance_name"])
+                       SET ic_status = '{}'
+                          ,dt_processamento = '{}'
+                          ,ic_processado = '{}'
+                          ,erro_airflow = '{}'
+                     WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["error_message"],param["instance_name"])
            cursor.execute(query)
 
     t1 = spark_csv_raw()
