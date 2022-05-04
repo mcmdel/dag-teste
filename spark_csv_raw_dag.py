@@ -49,7 +49,7 @@ def spark_job_csv():
         print("Parametro", dag_run.run_id)
 
         try:
-            job = LivyOperator(task_id = 'spark_job_raw',file='file:/app/processar.py', args=["--args1", message], polling_interval=1) # ,
+            job = LivyOperator(task_id = 'spark_job_raw',file='local:/app/processar.py', args=["--args1", message], polling_interval=1) # ,
 
             job.execute('spark_job_raw')
             status = 'success'
