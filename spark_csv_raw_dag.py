@@ -51,7 +51,7 @@ def spark_job_csv():
         try:
             job = LivyOperator(task_id = 'spark_job_raw',file='app/processar.py', args=["--args1", message], polling_interval=1)
 
-            job.execute()
+            job.execute('spark_job_raw')
             status = 'success'
         except Exception as e:
             error_message = e
