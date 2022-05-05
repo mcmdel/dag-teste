@@ -13,7 +13,7 @@ with airflow.DAG('dag_spark_submit_raw',
     task_elt_documento_pagar = SparkSubmitOperator(
         task_id='py_spark',
         conn_id='spark_default',
-        application="./app/processar.py",
+        application="local:/app/processar.py",
         application_args=["teste"], #caso precise enviar dados da dag para o job airflow utilize esta propriedade
         total_executor_cores=2,
         executor_memory="1g"
