@@ -7,6 +7,7 @@ import os
 
 from airflow.decorators import dag, task
 from airflow.providers.apache.livy.operators.livy import LivyOperator
+from airflow.exceptions import AirflowException
 
 ############################################################
 # Default DAG arguments
@@ -49,11 +50,14 @@ def spark_job_csv():
         print("Parametro", dag_run.run_id)
 
         try:
-            job = LivyOperator(task_id = 'spark_job_raw',file='local:/app/processar.py', args=[message], polling_interval=1) # "--args1",
+            job = LivyOperator(task_id = 'spark_job_raw',file='local:/app/processar.py', args=[message], polling_interval=0) # "--args1",
 
             job.execute('spark_job_raw')
             status = 'success'
         except Exception as e:
+            error_message = e
+            status = 'failed'
+        except AirflowException as e:
             error_message = e
             status = 'failed'
         finally:
