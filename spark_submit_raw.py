@@ -12,5 +12,5 @@ with DAG(
 ) as dag:
     # [START howto_operator_spark_submit]
     submit_job = SparkSubmitOperator(
-        application="local:/opt/bitnami/spark/examples/src/main/python/pi.py", task_id="submit_job"
+        application="${SPARK_HOME}/examples/src/main/python/pi.py", task_id="submit_job"
     )
