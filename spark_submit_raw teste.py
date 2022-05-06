@@ -35,3 +35,5 @@ name='teste_servico',
 execution_timeout=timedelta(minutes=10),
 dag=dag
 )
+
+flight_search_ingestion
