@@ -24,7 +24,7 @@ dag = DAG(dag_id='teste_executa_spark',
           schedule_interval="0 * * * *")
 
 flight_search_ingestion= SparkSubmitOperator(task_id='teste_servico',
-conn_id='spark_default',
+conn_id='spark_local',#spark_default
 application=f'{pyspark_app_home}/processar.py',
 total_executor_cores=4,
 #packages="io.delta:delta-core_2.12:0.7.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.0.0",
