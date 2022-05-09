@@ -84,7 +84,8 @@ def spark_job_csv():
             error_message = error_message.replace("{","")
             error_message = error_message.replace("}","")
             error_message = error_message.replace(":"," ")
-            error_message = error_message.replace("''","")
+            error_message = error_message.replace("\'","")
+            error_message = error_message.replace("\"","")
 
         except Exception as e:
             error_message = e
