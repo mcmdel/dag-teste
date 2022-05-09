@@ -96,7 +96,7 @@ def spark_job_csv():
             success = 'false'
             job_id = 'undefined'
         finally:
-            if success == 'true':
+            if success == 'True':
                 process = 'S'
             else:
                 process = 'E'
