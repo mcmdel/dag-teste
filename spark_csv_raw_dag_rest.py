@@ -80,8 +80,12 @@ def spark_job_csv():
             success = str(json_response['success'])
             job_id = str(json_response['submissionId'])
             error_message = str(json_response)
-            error_message = error_message.replace("{","\"")
-            error_message = error_message.replace("}","\"")
+
+            error_message = error_message.replace("{","")
+            error_message = error_message.replace("}","")
+            error_message = error_message.replace(":"," ")
+            error_message = error_message.replace("''","")
+
         except Exception as e:
             error_message = e
             success = 'false'
@@ -120,7 +124,7 @@ def spark_job_csv():
                          SET ic_status = '{}'
                             ,dt_processamento = '{}'
                             ,ic_processado = '{}'
-                            ,erro_airflow = "'{}'"
+                            ,erro_airflow = '{}'
                             ,job_id = '{}'
                        WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],str(param["error_message"]),param["job_id"],param["instance_name"])
            cursor.execute(query)
