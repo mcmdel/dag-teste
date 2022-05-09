@@ -59,7 +59,7 @@ def spark_job_csv():
                        "appResource": "file:/app/processar.py",
                        "sparkProperties": {
                          "spark.app.name": "csv - raw",
-                         "spark.submit.deployMode": "cluster",
+                         "spark.submit.deployMode": "cluster"
                        },
                        "clientSparkVersion": "3.2.0",
                        "mainClass": "org.apache.spark.deploy.SparkSubmit",
@@ -86,6 +86,7 @@ def spark_job_csv():
         except AirflowException as e:
             error_message = e
             success = 'false'
+            job_id = 'undefined'
         finally:
             if success == 'true':
                 process = 'S'
@@ -117,7 +118,7 @@ def spark_job_csv():
                             ,dt_processamento = '{}'
                             ,ic_processado = '{}'
                             ,erro_airflow = '{}'
-                       WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["error_message"],param["instance_name"])
+                       WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["error_message"],param["job_id"])
            cursor.execute(query)
 
     t1 = spark_csv_raw()
