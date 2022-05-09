@@ -118,7 +118,7 @@ def spark_job_csv():
                             ,dt_processamento = '{}'
                             ,ic_processado = '{}'
                             ,erro_airflow = '{}'
-                       WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["error_message"],param["job_id"])
+                       WHERE nome_instancia = '{}'""".format(param["status"],param["process_date"],param["process"],param["error_message"],param["instance_name"])
            cursor.execute(query)
 
     t1 = spark_csv_raw()
