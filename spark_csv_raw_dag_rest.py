@@ -27,7 +27,7 @@ default_args = {
 }
 
 @dag(
-     dag_id= 'spark_csv_raw_dag',
+     dag_id= 'spark_csv_raw_dag_rest',
      description= 'Execução do Spark JOB para carga de dados na Raw',
      start_date=datetime(2022, 5, 9),
      catchup=False,
@@ -124,4 +124,4 @@ def spark_job_csv():
     t1 = spark_csv_raw()
     update_metadata(t1)
 
-spark_csv_raw_dag = spark_job_csv()
+spark_csv_raw_dag_rest = spark_job_csv()
