@@ -67,9 +67,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.trusted.fornecedor """)
+        cur.execute(""" delete from iceberg.dimension.fornecedor """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.trusted."fornecedor" select * from solo_operacional.dbo.fornecedor """)
+        cur.execute(""" insert into iceberg.dimension."fornecedor" select * from solo_operacional.dbo.fornecedor """)
         cur.fetchall()
 
     @task(task_id = 'atualiza_cnpj_ad')
@@ -78,9 +78,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.trusted.distribuidor """)
+        cur.execute(""" delete from iceberg.dimension.distribuidor """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.trusted."distribuidor" select * from solo_operacional.dbo.distribuidor """)
+        cur.execute(""" insert into iceberg.dimension."distribuidor" select * from solo_operacional.dbo.distribuidor """)
         cur.fetchall()
 
     @task(task_id = 'envia_email')
