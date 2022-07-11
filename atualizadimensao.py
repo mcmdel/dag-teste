@@ -45,9 +45,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.trusted."produto_fornecedor" """)
+        cur.execute(""" delete from iceberg.dimension."produto_fornecedor" """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.trusted."produto_fornecedor" select * from solo_operacional.dbo.produto_fornecedor """)
+        cur.execute(""" insert into iceberg.dimension."produto_fornecedor" select * from solo_operacional.dbo.produto_fornecedor """)
         cur.fetchall()
 
     @task(task_id = 'atualiza_prd_AD')
@@ -56,9 +56,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.trusted.produto_parceria """)
+        cur.execute(""" delete from iceberg.dimension.produto_parceria """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.trusted."produto_parceria" select * from solo_operacional.dbo.produto_parceria """)
+        cur.execute(""" insert into iceberg.dimension."produto_parceria" select * from solo_operacional.dbo.produto_parceria """)
         cur.fetchall()
 
     @task(task_id = 'atualiza_cnpj_fornecedor')
