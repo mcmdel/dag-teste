@@ -89,9 +89,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.dimension.ctr_produto_kit """)
+        cur.execute(""" delete from iceberg.dimension.produto_kit """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.dimension."ctr_produto_kit" select * from solo_operacional.dbo.ctr_produto_kit """)
+        cur.execute(""" insert into iceberg.dimension."produto_kit" select * from solo_operacional.dbo.ctr_produto_kit """)
         cur.fetchall()
 
 
@@ -101,9 +101,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.dimension.ctr_produto_interno """)
+        cur.execute(""" delete from iceberg.dimension.produto_interno """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.dimension."ctr_produto_interno" select * from solo_operacional.dbo.ctr_produto_interno """)
+        cur.execute(""" insert into iceberg.dimension."produto_interno" select * from solo_operacional.dbo.ctr_produto_interno """)
         cur.fetchall()
 
     @task(task_id = 'atualiza_produto_ean')
@@ -112,9 +112,9 @@ def carga_trino():
         #### Executa script no trino
         """
         cur = conn.cursor()
-        cur.execute(""" delete from iceberg.dimension.ctr_produto_ean """)
+        cur.execute(""" delete from iceberg.dimension.produto_ean """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.dimension."ctr_produto_ean" select * from solo_operacional.dbo.ctr_produto_ean """)
+        cur.execute(""" insert into iceberg.dimension."produto_ean" select * from solo_operacional.dbo.ctr_produto_ean """)
         cur.fetchall()
 
     @task(task_id = 'envia_email')
