@@ -83,6 +83,40 @@ def carga_trino():
         cur.execute(""" insert into iceberg.dimension."distribuidor" select * from solo_operacional.dbo.distribuidor """)
         cur.fetchall()
 
+    @task(task_id = 'atualiza_produto_kit')
+    def atualiza_produto_kit():
+        """
+        #### Executa script no trino
+        """
+        cur = conn.cursor()
+        cur.execute(""" delete from iceberg.dimension.ctr_produto_kit """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.dimension."ctr_produto_kit" select * from solo_operacional.dbo.ctr_produto_kit """)
+        cur.fetchall()
+
+
+    @task(task_id = 'atualiza_produto_interno')
+    def atualiza_produto_interno():
+        """
+        #### Executa script no trino
+        """
+        cur = conn.cursor()
+        cur.execute(""" delete from iceberg.dimension.ctr_produto_interno """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.dimension."ctr_produto_interno" select * from solo_operacional.dbo.ctr_produto_interno """)
+        cur.fetchall()
+
+    @task(task_id = 'atualiza_produto_ean')
+    def atualiza_produto_ean():
+        """
+        #### Executa script no trino
+        """
+        cur = conn.cursor()
+        cur.execute(""" delete from iceberg.dimension.ctr_produto_ean """)
+        cur.fetchall()
+        cur.execute(""" insert into iceberg.dimension."ctr_produto_ean" select * from solo_operacional.dbo.ctr_produto_ean """)
+        cur.fetchall()
+
     @task(task_id = 'envia_email')
     def envia_email():
         """
@@ -91,7 +125,7 @@ def carga_trino():
     print ("Sucesso")
 
 
-    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad()] >> envia_email()
+    [atualiza_prd_Fornecedor(),atualiza_prd_AD(),atualiza_cnpj_fornecedor(), atualiza_cnpj_ad(), atualiza_produto_kit(),atualiza_produto_interno(), atualiza_produto_ean()] >> envia_email()
 
 carga_trino_dag = carga_trino()
 
