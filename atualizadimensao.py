@@ -125,7 +125,7 @@ def carga_trino():
         cur = conn.cursor()
         cur.execute(""" delete from iceberg.dimension.dim_fornecedor_tempo """)
         cur.fetchall()
-        cur.execute(""" insert into iceberg.dimension."dim_fornecedor_tempo" select * from solo_operacional.dbo.dim_fornecedor_tempo """)
+        cur.execute(""" insert into iceberg.dimension."dim_fornecedor_tempo" select * from solo_operacional.dbo.COR_DIM_FORNECEDOR_TEMPO""")
         cur.fetchall()
 
     @task(task_id = 'atualiza_cpf_lgpd')
