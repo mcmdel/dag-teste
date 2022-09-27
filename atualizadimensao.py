@@ -9,7 +9,7 @@ import trino
 
 conn = trino.dbapi.connect(
     host='trino.warehouse',
-    port=8080,
+    port=1010,
     user='admin',
     catalog='iceberg',
     schema='trusted',
