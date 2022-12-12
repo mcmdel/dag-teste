@@ -47,12 +47,11 @@ ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 DAG_ID = "exec_spark_operator_teste"
 
 with DAG(
-    DAG_ID,
-    default_args={"max_active_runs": 1},
-    description="submit spark-pi as sparkApplication on kubernetes",
-    schedule=timedelta(days=1),
-    start_date=datetime(2021, 1, 1),
+    dag_id='exec_spark_operator_teste',
+    schedule_interval=None,
+    start_date=datetime(2022, 5, 5),
     catchup=False,
+    tags=['example'],
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
     t1 = SparkKubernetesOperator(
