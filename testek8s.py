@@ -44,7 +44,7 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = "spark_operator_teste"
+DAG_ID = "exec_spark_operator_teste"
 
 with DAG(
     DAG_ID,
