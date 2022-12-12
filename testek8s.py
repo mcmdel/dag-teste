@@ -62,20 +62,21 @@ with DAG(
         dag=dag,
     )
 
-    t2 = SparkKubernetesSensor(
-        task_id="spark_pi_monitor",
-        namespace="default",
-        application_name="{{ task_instance.xcom_pull(task_ids='spark_pi_submit')['metadata']['name'] }}",
-        dag=dag,
-    )
-    t1 >> t2
+    # t2 = SparkKubernetesSensor(
+    #     task_id="spark_pi_monitor",
+    #     namespace="default",
+    #     application_name="{{ task_instance.xcom_pull(task_ids='spark_pi_submit')['metadata']['name'] }}",
+    #     dag=dag,
+    # )
+    # t1 >> t2
+    t1
 
-    # [END SparkKubernetesOperator_DAG]
-    from tests.system.utils.watcher import watcher
+    # # [END SparkKubernetesOperator_DAG]
+    # from tests.system.utils.watcher import watcher
 
-    # This test needs watcher in order to properly mark success/failure
-    # when "tearDown" task with trigger rule is part of the DAG
-    list(dag.tasks) >> watcher()
+    # # This test needs watcher in order to properly mark success/failure
+    # # when "tearDown" task with trigger rule is part of the DAG
+    # list(dag.tasks) >> watcher()
 
 # from tests.system.utils import get_test_run  # noqa: E402
 
