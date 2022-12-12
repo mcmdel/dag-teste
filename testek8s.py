@@ -44,28 +44,29 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
-DAG_ID = "exec_spark_operator_teste"
+DAG_ID = "spark_pi"
 
 with DAG(
-    dag_id='exec_spark_operator_teste',
-    schedule_interval=None,
-    start_date=datetime(2022, 5, 5),
+    DAG_ID,
+    default_args={"max_active_runs": 1},
+    description="submit spark-pi as sparkApplication on kubernetes",
+    schedule=timedelta(days=1),
+    start_date=datetime(2021, 1, 1),
     catchup=False,
-    tags=['example'],
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
     t1 = SparkKubernetesOperator(
-        task_id="executa servico",
-        namespace="spark-jobs",
-        application_file="spark-dimensions-alocacao.yaml",
+        task_id="spark_pi_submit",
+        namespace="default",
+        application_file="example_spark_kubernetes_spark_pi.yaml",
         do_xcom_push=True,
         dag=dag,
     )
 
     t2 = SparkKubernetesSensor(
-        task_id="spark_monitor",
-        namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='executa servico')['metadata']['name'] }}",
+        task_id="spark_pi_monitor",
+        namespace="default",
+        application_name="{{ task_instance.xcom_pull(task_ids='spark_pi_submit')['metadata']['name'] }}",
         dag=dag,
     )
     t1 >> t2
