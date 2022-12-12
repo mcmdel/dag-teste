@@ -17,14 +17,14 @@
 # under the License.
 from __future__ import annotations
 
-"""
-This is an example DAG which uses SparkKubernetesOperator and SparkKubernetesSensor.
-In this example, we create two tasks which execute sequentially.
-The first task is to submit sparkApplication on Kubernetes cluster(the example uses spark-pi application).
-and the second task is to check the final state of the sparkApplication that submitted in the first state.
-Spark-on-k8s operator is required to be already installed on Kubernetes
-https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
-"""
+# """
+# This is an example DAG which uses SparkKubernetesOperator and SparkKubernetesSensor.
+# In this example, we create two tasks which execute sequentially.
+# The first task is to submit sparkApplication on Kubernetes cluster(the example uses spark-pi application).
+# and the second task is to check the final state of the sparkApplication that submitted in the first state.
+# Spark-on-k8s operator is required to be already installed on Kubernetes
+# https://github.com/GoogleCloudPlatform/spark-on-k8s-operator
+# """
 
 import os
 from datetime import datetime, timedelta
@@ -50,7 +50,6 @@ with DAG(
     DAG_ID,
     default_args={"max_active_runs": 1},
     description="submit spark-pi as sparkApplication on kubernetes",
-    schedule=timedelta(days=1),
     start_date=datetime(2022, 12, 12),
     catchup=False,
 ) as dag:
