@@ -58,7 +58,7 @@ with DAG(
         task_id="spark_pi_submit",
         namespace="spark-jobs",
         application_file="spark-dimensions-alocacao.yaml",
-        kubernetes_conn_id = "k8shomolog",
+        #kubernetes_conn_id = "k8shomolog",
         do_xcom_push=True,
         dag=dag,
     )
