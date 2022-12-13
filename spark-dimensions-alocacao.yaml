@@ -1,0 +1,168 @@
+apiVersion: "sparkoperator.k8s.io/v1beta2"
+kind: SparkApplication
+metadata:
+  name: dimension-cdl-alocacao
+  namespace: spark-jobs
+spec:
+  # schedule: "30 3 * * *"
+  # concurrencyPolicy: Forbid
+  #runHistoryLimit: 3
+  #template:
+     type: Python
+     pythonVersion: "3"
+     mode: cluster
+     image: us-east1-docker.pkg.dev/analog-provider-327416/mtxdev01-repo/stg-dimension-pad:2
+     imagePullPolicy: Always
+     mainApplicationFile: "local:///app/maindimensionalocacao.py"
+     sparkVersion: "3.2.0"
+     restartPolicy:
+        type: OnFailure
+        onFailureRetries: 3
+        onFailureRetryInterval: 10
+        onSubmissionFailureRetries: 30
+        onSubmissionFailureRetryInterval: 20
+     volumes:
+       - name: "local-volume"
+         hostPath:
+           path: "/tmp"
+           type: Directory
+       - name: staging-volume
+         emptyDir: {}
+     dynamicAllocation:
+       enabled: true
+       initialExecutors: 0
+       minExecutors: 1
+       maxExecutors: 3
+     driver:
+       labels:
+         version: 3.2.0
+       #annotations: "cluster-autoscaler.kubernetes.io/safe-to-evict": "true" # para permitir escalar verticalmente (up/down)
+       serviceAccount: spark-spark
+       cores: 1
+       memory: "2072m"
+       memoryOverhead: "1024m"
+       terminationGracePeriodSeconds: 60
+       volumeMounts:
+         - name: "local-volume"
+           mountPath: "/tmp"
+         - name: "staging-volume"
+           mountPath: "/home/spark/staging"
+       envVars:
+         PATH_JSON_SCHEMAS: "schemas.json"
+         KAFKA_BROKER: "cluster-mtrix-kafka-kafka-bootstrap.strimzi-operator:9092"
+         KAFKA_CONSUMER_GROUP: "kva-server-group_client_spark_vendas_trusted"
+         KAFKA_CONSUMER_MAX_POLL_INTERVAL_MS: "300000"
+         KAFKA_CONSUMER_TOPIC: "spark-trusted"
+         KAFKA_CHECKPOINT: "s3a://warehouse/chkp_trusted/"
+         MINIO_ENDPOINT: "minio.mtrix-minio-dev:80"
+         MINIO_ACCESS_KEY: "peFMNYkRUIE0Koh2"
+         MINIO_SECRET_KEY: "J6OsV8kfCpzUYpzYKZF2SHjWGlaVBtci"
+         #MINIO_BUCKET: "pasta-csv"
+         #MINIO_BUCKET_HUDI: "s3a://warehouse/raw/data/"
+         SPARKMASTER_IP: "0.0.0.0:7078"
+         MINIO_SECURE: "False"
+         #PARTITION_BASEDIR: "/tmp/partition_stage"
+         PG_DATABASE: "mtrix_metadata"
+         PG_USER: "postgres"
+         PG_PASSWORD: "dbagnx2010@"
+         PG_HOST: "metadata-postgres.mtrix-postgres"
+         PG_PORT: "5432"
+         TZ: "America/Sao_Paulo"
+     executor:
+       deleteOnTermination: true
+       envVars:
+         PATH_JSON_SCHEMAS: "schemas.json"
+         KAFKA_BROKER: "cluster-mtrix-kafka-kafka-bootstrap.strimzi-operator:9092"
+         KAFKA_CONSUMER_GROUP: "kva-server-group_client_spark_vendas_trusted"
+         KAFKA_CONSUMER_MAX_POLL_INTERVAL_MS: "300000"
+         KAFKA_CONSUMER_TOPIC: "spark-trusted"
+         KAFKA_CHECKPOINT: "s3a://warehouse/chkp_trusted/"
+         MINIO_ENDPOINT: "minio.mtrix-minio-dev:80"
+         MINIO_ACCESS_KEY: "peFMNYkRUIE0Koh2"
+         MINIO_SECRET_KEY: "J6OsV8kfCpzUYpzYKZF2SHjWGlaVBtci"
+         #MINIO_BUCKET: "pasta-csv"
+         #MINIO_BUCKET_HUDI: "s3a://warehouse/raw/data/"
+         SPARKMASTER_IP: "0.0.0.0:7078"
+         MINIO_SECURE: "False"
+         #PARTITION_BASEDIR: "/tmp/partition_stage"
+         PG_DATABASE: "mtrix_metadata"
+         PG_USER: "postgres"
+         PG_PASSWORD: "dbagnx2010@"
+         PG_HOST: "metadata-postgres.mtrix-postgres"
+         PG_PORT: "5432"
+         TZ: "America/Sao_Paulo"
+       cores: 1
+       memory: "2072m"
+       memoryOverhead: "1024m"
+       labels:
+         version: 3.2.0
+       volumeMounts:
+         - name: "local-volume"
+           mountPath: "/tmp"
+         - name: "staging-volume"
+           mountPath: "/home/spark/staging"
+     sparkConf:
+       "spark.sql.adaptive.enabled": "true"
+       "spark.sql.adaptive.coalescePartitions.enabled": "true"
+
+       "spark.dynamicAllocation.shuffleTracking.enabled": "true"
+       "spark.sql.shuffle.partitions": "5"
+       "spark.sql.legacy.timeParserPolicy": "LEGACY" # necessario para tratar exceção do to_date
+       "spark.sql.extensions": "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions"
+       "spark.rdd.compress": "true"
+       "spark.sql.hive.convertMetastoreParquet": "false"
+
+       # hive metastore config
+       "org.apache.hadoop.hive.conf.HiveConf": "/opt/hive-metastore"
+
+       #spark.sql.hive.metastore.version=3.1.2
+       #spark.sql.hive.metastore.jars=path
+       #spark.sql.hive.metastore.jars.path=/opt/hive-metastore/jars/*
+       # hive metastore config
+
+       # config iceberg
+       "spark.sql.catalog.spark_catalog": "org.apache.iceberg.spark.SparkSessionCatalog"
+       "spark.sql.catalog.spark_catalog.type": "hive"
+       "spark.sql.catalog.spark_catalog.uri": "thrift://metastore.warehouse:9083"
+       # config iceberg
+
+       "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+       "spark.hadoop.fs.s3a.aws.credential.provider": "SimpleAWSCredentialsProvider"
+       "spark.hadoop.fs.s3a.endpoint": "http://minio.mtrix-minio-dev:80"
+       "spark.hadoop.fs.s3a.access.key": "peFMNYkRUIE0Koh2"
+       "spark.hadoop.fs.s3a.secret.key": "J6OsV8kfCpzUYpzYKZF2SHjWGlaVBtci"
+       "spark.hadoop.fs.s3a.multiobjectdelete.enable": "false"
+       "spark.hadoop.fs.s3a.path.style.access": "true"
+       "spark.hadoop.fs.s3a.block.size": "512M"
+       "spark.hadoop.fs.s3a.buffer.dir": "${hadoop.tmp.dir}/s3a"
+       "spark.hadoop.fs.s3a.committer.magic.enabled": "false"
+       "spark.hadoop.fs.s3a.committer.name": "directory"
+       "spark.hadoop.fs.s3a.committer.staging.abort.pending.uploads": "true"
+       "spark.hadoop.fs.s3a.committer.staging.conflict-mode": "append"
+       "spark.hadoop.fs.s3a.committer.staging.tmp.path": "/tmp/staging"
+       "spark.hadoop.fs.s3a.committer.staging.unique-filenames": "true"
+       "spark.hadoop.fs.s3a.connection.establish.timeout": "5000"
+       "spark.hadoop.fs.s3a.connection.ssl.enabled": "false"
+       "spark.hadoop.fs.s3a.connection.timeout": "200000"
+       "spark.hadoop.fs.s3a.committer.threads": "2048"         # Number of threads writing to MinIO
+       "spark.hadoop.fs.s3a.connection.maximum": "8192"        # Maximum number of concurrent conns
+       "spark.hadoop.fs.s3a.fast.upload.active.blocks": "2048" # Number of parallel uploads
+       "spark.hadoop.fs.s3a.fast.upload.buffer": "disk"        # Use disk as the buffer for uploads
+       "spark.hadoop.fs.s3a.fast.upload": "true"               # Turn on fast upload mode
+       "spark.hadoop.fs.s3a.max.total.tasks": "2048"           # Maximum number of parallel tasks
+       "spark.hadoop.fs.s3a.multipart.size": "512M"            # Size of each multipart chunk
+       "spark.hadoop.fs.s3a.multipart.threshold": "512M"       # Size before using multipart uploads
+       "spark.hadoop.fs.s3a.socket.recv.buffer": "65536"       # Read socket buffer hint
+       "spark.hadoop.fs.s3a.socket.send.buffer": "65536"       # Write socket buffer hint
+       "spark.hadoop.fs.s3a.threads.max": "2048"               # Maximum number of threads for S3A
+
+       # Testes para melhorar performance streaming
+       #"spark.streaming.dynamicAllocation.enabled": "true"
+       "spark.streaming.kafka.maxRatePerPartition": "50"
+       "spark.sql.optimizer.maxIterations": "2000"             # Importante para não dar erro em processamentos com arquivos maiores
+       "spark.streaming.backpressure.enabled": "true"
+       "spark.streaming.concurrentJobs": "5"
+       "spark.executor.extraJavaOptions": "-XX:+UseConcMarkSweepGC"
+       "spark.streaming.backpressure.pid.minRate": "2000"
+
+       # Testar mandar para diferentes tópicos conforme algum critério
