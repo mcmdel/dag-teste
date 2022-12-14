@@ -14,13 +14,14 @@ spec:
      image: us-east1-docker.pkg.dev/analog-provider-327416/mtxdev01-repo/stg-dimension-pad:2
      imagePullPolicy: Always
      mainApplicationFile: "local:///app/maindimensionalocacao.py"
+     timeToLiveSeconds: 10
      sparkVersion: "3.2.0"
-     restartPolicy:
-        type: OnFailure
-        onFailureRetries: 3
-        onFailureRetryInterval: 10
-        onSubmissionFailureRetries: 30
-        onSubmissionFailureRetryInterval: 20
+    #  restartPolicy:
+    #     type: OnFailure
+    #     onFailureRetries: 3
+    #     onFailureRetryInterval: 10
+    #     onSubmissionFailureRetries: 30
+    #     onSubmissionFailureRetryInterval: 20
      volumes:
        - name: "local-volume"
          hostPath:
