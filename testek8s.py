@@ -63,16 +63,16 @@ with DAG(
         dag=dag,
     )
 
-    # t2 = SparkKubernetesSensor(
-    #     task_id="spark_pi_monitor",
-    #     namespace="default",
-    #     application_name="{{ task_instance.xcom_pull(task_ids='spark_pi_submit')['metadata']['name'] }}",
-    #     dag=dag,
-    # )
-    # t1 >> t2
-    t1
+    t2 = SparkKubernetesSensor(
+        task_id="spark_pi_monitor",
+        namespace="default",
+        application_name="{{ task_instance.xcom_pull(task_ids='spark-jobs')['metadata']['name'] }}",
+        dag=dag,
+    )
+    t1 >> t2
+    #t1
 
-    # # [END SparkKubernetesOperator_DAG]
+    # [END SparkKubernetesOperator_DAG]
     # from tests.system.utils.watcher import watcher
 
     # # This test needs watcher in order to properly mark success/failure
