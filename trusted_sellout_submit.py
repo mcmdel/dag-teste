@@ -57,7 +57,7 @@ with DAG(
     t1 = SparkKubernetesOperator(
         task_id="trusted_sellout_submit",
         namespace="spark-jobs",
-        application_file="/yaml_gcp/spark-trusted-sellout.yaml",
+        application_file="/yaml_gcp/spark-trustedsellout.yaml",
         #kubernetes_conn_id = "k8shomolog",
         do_xcom_push=True,
         dag=dag,
