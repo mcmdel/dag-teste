@@ -63,7 +63,7 @@ with DAG(
     )
 
     t2 = SparkKubernetesSensor(
-        task_id="trusted_sellout_monitor",
+        task_id="trusted_stock_monitor",
         namespace="spark-jobs",
         application_name="{{ task_instance.xcom_pull(task_ids='trusted_stock_submit')['metadata']['name'] }}",
         dag=dag,
