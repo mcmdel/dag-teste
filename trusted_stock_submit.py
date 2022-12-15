@@ -41,23 +41,22 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 
 # [START instantiate_dag]
-##
 
 DAG_ID = "trusted_sellout_submit"
 
 with DAG(
     DAG_ID,
     default_args={"max_active_runs": 1},
-    description="submit ingest Sellout as sparkApplication on kubernetes",
+    description="submit ingest Stock as sparkApplication on kubernetes",
     schedule_interval='10/10 * * * *',
     start_date=datetime(2022, 12, 12),
     catchup=False,
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
     t1 = SparkKubernetesOperator(
-        task_id="trusted_sellout_submit",
+        task_id="trusted_stock_submit",
         namespace="spark-jobs",
-        application_file="/yaml_gcp/spark-trusted-sellout.yaml",
+        application_file="/yaml_gcp/spark-trusted-stock.yaml",
         #kubernetes_conn_id = "k8shomolog",
         do_xcom_push=True,
         dag=dag,
@@ -66,7 +65,7 @@ with DAG(
     t2 = SparkKubernetesSensor(
         task_id="trusted_sellout_monitor",
         namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='trusted_sellout_submit')['metadata']['name'] }}",
+        application_name="{{ task_instance.xcom_pull(task_ids='trusted_stock_submit')['metadata']['name'] }}",
         dag=dag,
     )
     t1 >> t2
