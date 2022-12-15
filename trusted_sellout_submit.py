@@ -51,6 +51,7 @@ with DAG(
     description="submit ingest Sellout as sparkApplication on kubernetes",
     schedule_interval='10/10 * * * *',
     start_date=datetime(2022, 12, 12),
+    tags=['trusted', 'ingest'],
     catchup=False,
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
