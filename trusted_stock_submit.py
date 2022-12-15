@@ -42,7 +42,7 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 # [START instantiate_dag]
 
-DAG_ID = "trusted_sellout_submit"
+DAG_ID = "trusted_stock_submit"
 
 with DAG(
     DAG_ID,
