@@ -1,20 +1,20 @@
 apiVersion: "sparkoperator.k8s.io/v1beta2"
 kind: SparkApplication
 metadata:
-  name: refined-ingest-purchase-ad
+  name: refined-purchase-ingestion
   namespace: spark-jobs
 spec:
      type: Python
      pythonVersion: "3"
      mode: cluster
-     image: us-east1-docker.pkg.dev/analog-provider-327416/mtxdev01-repo/spark-ingest-sellin-ad-refined:1
+     image: us-east1-docker.pkg.dev/analog-provider-327416/mtxdev01-repo/trusted-sellin-ad-ingestion:1
      imagePullPolicy: Always
-     mainApplicationFile: "local:///app/ingestRefined.py"
+     mainApplicationFile: "local:///app/ingestTrusted.py"
      timeToLiveSeconds: 120
      sparkVersion: "3.2.0"
      restartPolicy:
         type: OnFailure
-        onFailureRetries: 0
+        onFailureRetries: 3
         onFailureRetryInterval: 10
         onSubmissionFailureRetries: 30
         onSubmissionFailureRetryInterval: 20
