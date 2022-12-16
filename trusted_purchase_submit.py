@@ -48,7 +48,7 @@ with DAG(
     DAG_ID,
     default_args={"max_active_runs": 1},
     description="submit ingest Sellin AD Fabricante as sparkApplication on kubernetes",
-    schedule_interval='10/10 * * * *',
+    schedule_interval='00 * * * *',
     start_date=datetime(2022, 12, 12),
     tags=['trusted', 'ingest'],
     catchup=False,
