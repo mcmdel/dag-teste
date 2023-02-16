@@ -42,7 +42,7 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 # [START instantiate_dag]
 
-DAG_ID = "dimension_aloc_submit"
+DAG_ID = "dimension_alocacao_submit"
 
 with DAG(
     DAG_ID,

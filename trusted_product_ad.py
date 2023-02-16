@@ -41,32 +41,45 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 
 # [START instantiate_dag]
+##
 
-DAG_ID = "stg_dimension_publicacao_submit"
+DAG_ID = "trusted_product_ad_submit"
 
 with DAG(
     DAG_ID,
     default_args={"max_active_runs": 1},
-    description="submit ingest Dimension Publicacao as sparkApplication on kubernetes",
-    schedule_interval='30 3 * * *',
-    start_date=datetime(2022, 12, 19),
-    tags=['dimension'],
+    description="submit ingest Sellout as sparkApplication on kubernetes",
+    schedule_interval='00 * * * *',
+    start_date=datetime(2023, 2, 16),
+    tags=['trusted', 'ingest'],
     catchup=False,
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
     t1 = SparkKubernetesOperator(
-        task_id="dimension_pub_submit",
+        task_id="trusted_product_ad_submit",
         namespace="spark-jobs",
-        application_file="/yaml_gcp/spark-dimensions-pub-cdl.yaml",
+        application_file="/yaml_gcp/spark-trusted-product-ad.yaml",
         #kubernetes_conn_id = "k8shomolog",
         do_xcom_push=True,
         dag=dag,
     )
 
     t2 = SparkKubernetesSensor(
-        task_id="dimension_pub_monitor",
+        task_id="trusted_product_ad_monitor",
         namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='dimension_pub_submit')['metadata']['name'] }}",
+        application_name="{{ task_instance.xcom_pull(task_ids='trusted_product_ad_submit')['metadata']['name'] }}",
         dag=dag,
     )
     t1 >> t2
+    #new
+    # [END SparkKubernetesOperator_DAG]
+    # from tests.system.utils.watcher import watcher
+
+    # # This test needs watcher in order to properly mark success/failure
+    # # when "tearDown" task with trigger rule is part of the DAG
+    # list(dag.tasks) >> watcher()
+
+# from tests.system.utils import get_test_run  # noqa: E402
+
+# # Needed to run the example DAG with pytest (see: tests/system/README.md#run_via_pytest)
+# test_run = get_test_run(dag)
