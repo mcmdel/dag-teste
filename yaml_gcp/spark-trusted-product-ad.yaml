@@ -29,14 +29,14 @@ spec:
        enabled: true
        initialExecutors: 0
        minExecutors: 0
-       maxExecutors: 5
+       maxExecutors: 3
      driver:
        labels:
          version: 3.2.0
        #annotations: "cluster-autoscaler.kubernetes.io/safe-to-evict": "true" # para permitir escalar verticalmente (up/down)
        serviceAccount: spark-spark
        cores: 2
-       memory: "3072m"
+       memory: "2072m"
        memoryOverhead: "1024m"
        terminationGracePeriodSeconds: 60
        volumeMounts:

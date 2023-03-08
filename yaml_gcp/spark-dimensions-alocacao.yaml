@@ -4,10 +4,6 @@ metadata:
   name: dimension-cdl-alocacao
   namespace: spark-jobs
 spec:
-  # schedule: "30 3 * * *"
-  # concurrencyPolicy: Forbid
-  #runHistoryLimit: 3
-  #template:
      type: Python
      pythonVersion: "3"
      mode: cluster
@@ -16,12 +12,14 @@ spec:
      mainApplicationFile: "local:///app/maindimensionalocacao.py"
      timeToLiveSeconds: 120
      sparkVersion: "3.2.0"
-    #  restartPolicy:
-    #     type: OnFailure
-    #     onFailureRetries: 3
-    #     onFailureRetryInterval: 10
-    #     onSubmissionFailureRetries: 30
-    #     onSubmissionFailureRetryInterval: 20
+    #  nodeSelector:
+    #   group: pool-4
+     restartPolicy:
+        type: OnFailure
+        onFailureRetries: 0
+        onFailureRetryInterval: 10
+        onSubmissionFailureRetries: 30
+        onSubmissionFailureRetryInterval: 20
      volumes:
        - name: "local-volume"
          hostPath:
@@ -31,7 +29,7 @@ spec:
          emptyDir: {}
      dynamicAllocation:
        enabled: true
-       initialExecutors: 0
+       initialExecutors: 1
        minExecutors: 1
        maxExecutors: 3
      driver:
@@ -39,9 +37,9 @@ spec:
          version: 3.2.0
        #annotations: "cluster-autoscaler.kubernetes.io/safe-to-evict": "true" # para permitir escalar verticalmente (up/down)
        serviceAccount: spark-spark
-       cores: 1
-       memory: "2072m"
-       memoryOverhead: "1024m"
+       cores: 2
+       memory: "3072m"
+       memoryOverhead: "2024m"
        terminationGracePeriodSeconds: 60
        volumeMounts:
          - name: "local-volume"
@@ -92,8 +90,8 @@ spec:
          PG_HOST: "metadata-postgres.mtrix-postgres"
          PG_PORT: "5432"
          TZ: "America/Sao_Paulo"
-       cores: 1
-       memory: "2072m"
+       cores: 2
+       memory: "3072m"
        memoryOverhead: "1024m"
        labels:
          version: 3.2.0
