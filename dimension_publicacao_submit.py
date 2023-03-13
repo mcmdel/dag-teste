@@ -42,7 +42,7 @@ from airflow.providers.cncf.kubernetes.sensors.spark_kubernetes import SparkKube
 
 # [START instantiate_dag]
 
-DAG_ID = "stg_dimension_publicacao_submit"
+DAG_ID = "dimension_stg_to_cdl_public_submit"
 
 with DAG(
     DAG_ID,
@@ -55,7 +55,7 @@ with DAG(
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
     t1 = SparkKubernetesOperator(
-        task_id="dimension_pub_submit",
+        task_id="dimension_to_stg_submit",
         namespace="spark-jobs",
         application_file="/yaml_gcp/spark-dimensions-pub-cdl.yaml",
         #kubernetes_conn_id = "k8shomolog",
@@ -64,9 +64,25 @@ with DAG(
     )
 
     t2 = SparkKubernetesSensor(
-        task_id="dimension_pub_monitor",
+        task_id="dimension_to_stg_monitor",
         namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='dimension_pub_submit')['metadata']['name'] }}",
+        application_name="{{ task_instance.xcom_pull(task_ids='dimension_to_stg_submit')['metadata']['name'] }}",
         dag=dag,
     )
-    t1 >> t2
+
+    t3 = SparkKubernetesOperator(
+        task_id="stg_to_cdl_submit",
+        namespace="spark-jobs",
+        application_file="/yaml_gcp/spark-stg-to-cdl.yaml",
+        #kubernetes_conn_id = "k8shomolog",
+        do_xcom_push=True,
+        dag=dag,
+    )
+
+    t4 = SparkKubernetesSensor(
+        task_id="stg_to_cdl_monitor",
+        namespace="spark-jobs",
+        application_name="{{ task_instance.xcom_pull(task_ids='stg_to_cdl_submit')['metadata']['name'] }}",
+        dag=dag,
+    )
+    t1 >> t2 >> t3 >> t4
