@@ -55,7 +55,7 @@ with DAG(
 ) as dag:
     # [START SparkKubernetesOperator_DAG]
     t1 = SparkKubernetesOperator(
-        task_id="dimension_to_stg_submit",
+        task_id="csv_to_stg_submit",
         namespace="spark-jobs",
         application_file="/yaml_gcp/spark-dimensions-pub-cdl.yaml",
         #kubernetes_conn_id = "k8shomolog",
@@ -64,9 +64,9 @@ with DAG(
     )
 
     t2 = SparkKubernetesSensor(
-        task_id="dimension_to_stg_monitor",
+        task_id="csv_to_stg_monitor",
         namespace="spark-jobs",
-        application_name="{{ task_instance.xcom_pull(task_ids='dimension_to_stg_submit')['metadata']['name'] }}",
+        application_name="{{ task_instance.xcom_pull(task_ids='csv_to_stg_submit')['metadata']['name'] }}",
         dag=dag,
     )
 
