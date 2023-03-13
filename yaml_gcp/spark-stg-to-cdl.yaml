@@ -4,7 +4,6 @@ metadata:
   name: stg-to-cdl
   namespace: spark-jobs
 spec:
-  template:
      type: Python
      pythonVersion: "3"
      mode: cluster
@@ -37,7 +36,7 @@ spec:
        #annotations: "cluster-autoscaler.kubernetes.io/safe-to-evict": "true" # para permitir escalar verticalmente (up/down)
        serviceAccount: spark-spark
        cores: 2
-       memory: "3072m"
+       memory: "4072m"
        memoryOverhead: "1024m"
        terminationGracePeriodSeconds: 60
        volumeMounts:
