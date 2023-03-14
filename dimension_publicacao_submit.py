@@ -85,5 +85,4 @@ with DAG(
         application_name="{{ task_instance.xcom_pull(task_ids='stg_to_cdl_submit')['metadata']['name'] }}",
         dag=dag,
     )
-
-t3 >> t4
+    t1 >> t2 >> t3 >> t4
