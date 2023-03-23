@@ -48,7 +48,7 @@ with DAG(
     DAG_ID,
     default_args={"max_active_runs": 1},
     description="submit ingest Dimension Publicacao as sparkApplication on kubernetes",
-    schedule_interval='30 3 * * *',
+    schedule_interval='00 7 * * *',
     start_date=datetime(2022, 12, 19),
     tags=['dimension'],
     catchup=False,

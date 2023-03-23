@@ -10,7 +10,7 @@ spec:
      image: us-east1-docker.pkg.dev/analog-provider-327416/mtxdev01-repo/stg-to-cdl:1
      imagePullPolicy: Always
      mainApplicationFile: "local:///app/mainstgtocdl.py"
-     timeToLiveSeconds: 120
+     timeToLiveSeconds: 600
      sparkVersion: "3.2.0"
      restartPolicy:
         type: OnFailure
@@ -108,7 +108,6 @@ spec:
        "spark.sql.extensions": "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions"
        "spark.rdd.compress": "true"
        "spark.sql.hive.convertMetastoreParquet": "false"
-
        # hive metastore config
        "org.apache.hadoop.hive.conf.HiveConf": "/opt/hive-metastore"
 
@@ -121,6 +120,8 @@ spec:
        "spark.sql.catalog.spark_catalog": "org.apache.iceberg.spark.SparkSessionCatalog"
        "spark.sql.catalog.spark_catalog.type": "hive"
        "spark.sql.catalog.spark_catalog.uri": "thrift://metastore.warehouse:9083"
+       "spark.sql.extensions": "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions"
+
        # config iceberg
 
        "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
